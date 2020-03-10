@@ -7,6 +7,7 @@ import os
 
 
 # prepare for model
+# prepare input x, output y
 
 class WordVector:
     def __init__(self, indir='/', outdir='/', logname="", step=0):
@@ -46,16 +47,8 @@ class WordVector:
             test_index = test_index.read()
             test_index = ast.literal_eval(test_index)
             data = pd.DataFrame(df, index=test_index)
-
         data.index = range(len(data))
-
-
-        self.df_log = pd.DataFrame()
-        self.df_log['EventId'] = data['EventId']
-        self.df_log['EventTemplate'] = data['EventTemplate']
-        self.df_log['Content'] = data['Content']
-        self.df_log["ParameterList"] = data['ParameterList']
-
+        self.df_log = data
         template_semantic_dir = os.path.join(self.indir, 'Template-Semantic.csv')
         self.template_semantic = pd.read_csv(template_semantic_dir)
 
@@ -89,7 +82,7 @@ class WordVector:
                     da = da + s
             self.data.append(da)
 
-# 训练词向量
+# 训练词向量,返回 input x, output y。
     def word2vec(self):
         modelpath = 'model/m2vmodel'
         formatpath = os.path.join('Word_embeddings/',self.logname)
